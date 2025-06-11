@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <title>Hello, World!</title>
+</head>
+<body>
+  <h1>
+    kas RT 02/04 Loram Wetan Jati Kudus
+  </h1>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kas Mobile</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            padding: 20px 10px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            padding: 15px;
+            background: rgba(0,0,0,0.15);
+            border-radius: 15px;
+        }
+        
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #444;
+            font-size: 0.95rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #f9f9f9;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f0f8ff;
+        }
+        
+        .radio-option input[type="radio"] {
+            width: auto;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(79, 172, 254, 0.4);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #3a9ff8 0%, #00d9e6 100%);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(to right, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 65, 108, 0.4);
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(to right, #e03a5f 0%, #e04428 100%);
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: linear-gradient(to right, #0ba360 0%, #3cba92 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(11, 163, 96, 0.4);
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(to right, #0a9554 0%, #36a784 100%);
+            transform: translateY(-2px);
+        }
+        
+        .total-box {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            border-radius: 12px;
+            color: white;
+            margin: 20px 0;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .total-box::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+        
+        .total-box h2 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .total-box .amount {
+            font-size: 2.2rem;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .transaction-list {
+            margin-top: 20px;
+        }
+        
+        .transaction-list h2 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #444;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th {
+            background-color: #f1f8ff;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a6fa8;
+            font-size: 0.9rem;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .in-amount {
+            color: #2ecc71;
+            font-weight: 600;
+        }
+        
+        .out-amount {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .delete-btn {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .delete-btn:hover {
+            background-color: #ff5252;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .no-transactions {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-style: italic;
+            background-color: #fafafa;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .date-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .date-input-group input {
+            flex: 1;
+        }
+        
+        @media (max-width: 480px) {
+            .card {
+                padding: 15px;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.85rem;
+            }
+            
+            .total-box .amount {
+                font-size: 1.8rem;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        .app-icon {
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 15px;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="app-icon">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <h1><i class="fas fa-mobile-alt"></i> Aplikasi Kas Mobile</h1>
+            <p>Catat pemasukan dan pengeluaran dengan mudah</p>
+        </header>
+        
+        <div class="card">
+            <h2><i class="fas fa-plus-circle"></i> Tambah Transaksi</h2>
+            <div class="form-group">
+                <label for="date"><i class="far fa-calendar"></i> Tanggal</label>
+                <input type="date" id="date" required>
+            </div>
+            <div class="form-group">
+                <label for="description"><i class="fas fa-pen"></i> Keterangan</label>
+                <input type="text" id="description" placeholder="Contoh: Gaji bulanan, Belanja bahan, dll">
+            </div>
+            
+            <div class="form-group">
+                <label for="amount"><i class="fas fa-money-bill-wave"></i> Jumlah (Rp)</label>
+                <input type="number" id="amount" placeholder="Masukkan jumlah">
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-exchange-alt"></i> Jenis Transaksi</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="type-in" name="type" value="in" checked>
+                        <label for="type-in"><i class="fas fa-arrow-down"></i> Kas Masuk</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="type-out" name="type" value="out">
+                        <label for="type-out"><i class="fas fa-arrow-up"></i> Kas Keluar</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="add-transaction" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Tambah Transaksi
+            </button>
+        </div>
+        
+        <div class="total-box">
+            <h2><i class="fas fa-coins"></i> Total Kas Saat Ini</h2>
+            <div class="amount">Rp 0</div>
+        </div>
+        
+        <div class="card">
+            <div class="transaction-list">
+                <h2><i class="fas fa-history"></i> Riwayat Transaksi</h2>
+                <div id="transactions-container">
+                    <div class="no-transactions">
+                        <i class="fas fa-inbox"></i><br><br>
+                        Belum ada transaksi.<br>Silakan tambahkan transaksi baru.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="export-pdf" class="btn btn-success">
+                    <i class="fas fa-file-pdf"></i> Unduh PDF
+                </button>
+                <button id="clear-all" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Hapus Semua
+                </button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Aplikasi Kas Mobile &copy; 2023 | Simpan data keuangan Anda dengan aman</p>
+        </div>
+    </div>
+
+    <script>
+        // Inisialisasi data transaksi
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let balance = 0;
+        
+        // Elemen DOM
+        const transactionsContainer = document.getElementById('transactions-container');
+        const balanceElement = document.querySelector('.amount');
+        const addButton = document.getElementById('add-transaction');
+        const exportButton = document.getElementById('export-pdf');
+        const clearButton = document.getElementById('clear-all');
+        const dateInput = document.getElementById('date');
+        
+        // Set tanggal default ke hari ini
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        dateInput.value = `${year}-${month}-${day}`;
+        
+        // Fungsi untuk menambahkan transaksi
+        function addTransaction() {
+            const dateValue = dateInput.value;
+            const description = document.getElementById('description').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+            const type = document.querySelector('input[name="type"]:checked').value;
+            
+            if (!dateValue) {
+                alert('Silakan masukkan tanggal transaksi');
+                return;
+            }
+            
+            if (!description) {
+                alert('Silakan masukkan keterangan transaksi');
+                return;
+            }
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('Silakan masukkan jumlah yang valid');
+                return;
+            }
+            
+            // Format tanggal untuk tampilan: DD/MM/YYYY
+            const formattedDate = new Date(dateValue).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            const transaction = {
+                id: Date.now(),
+                date: formattedDate,
+                rawDate: dateValue, // untuk keperluan pengurutan
+                description,
+                amount,
+                type
+            };
+            
+            transactions.push(transaction);
+            saveTransactions();
+            updateUI();
+            
+            // Reset form
+            document.getElementById('description').value = '';
+            document.getElementById('amount').value = '';
+            // Set kembali tanggal ke hari ini untuk transaksi berikutnya
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            dateInput.value = `${year}-${month}-${day}`;
+        }
+        
+        // Fungsi untuk menghapus transaksi
+        function deleteTransaction(id) {
+            transactions = transactions.filter(transaction => transaction.id !== id);
+            saveTransactions();
+            updateUI();
+        }
+        
+        // Fungsi untuk menghapus semua transaksi
+        function clearAllTransactions() {
+            if (transactions.length === 0) return;
+            
+            if (confirm('Apakah Anda yakin ingin menghapus semua transaksi?')) {
+                transactions = [];
+                saveTransactions();
+                updateUI();
+            }
+        }
+        
+        // Fungsi untuk menyimpan transaksi ke localStorage
+        function saveTransactions() {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+        }
+        
+        // Fungsi untuk mengupdate tampilan
+        function updateUI() {
+            // Hitung ulang saldo
+            balance = 0;
+            
+            transactions.forEach(transaction => {
+                if (transaction.type === 'in') {
+                    balance += transaction.amount;
+                } else {
+                    balance -= transaction.amount;
+                }
+            });
+            
+            // Update tampilan saldo
+            balanceElement.textContent = `Rp ${balance.toLocaleString('id-ID')}`;
+            
+            // Update warna saldo
+            const totalBox = document.querySelector('.total-box');
+            if (balance < 0) {
+                totalBox.style.background = 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)';
+            } else if (balance > 0) {
+                totalBox.style.background = 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)';
+            } else {
+                totalBox.style.background = 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)';
+            }
+            
+            // Update daftar transaksi
+            if (transactions.length === 0) {
+                transactionsContainer.innerHTML = `
+                    <div class="no-transactions">
+                        <i class="fas fa-inbox"></i><br><br>
+                        Belum ada transaksi.<br>Silakan tambahkan transaksi baru.
+                    </div>
+                `;
+                return;
+            }
+            
+            // Urutkan transaksi berdasarkan tanggal (terbaru di atas) dan jika sama, terbaru berdasarkan id
+            const sortedTransactions = [...transactions].sort((a, b) => {
+                // Jika tanggal sama, bandingkan berdasarkan id (terbaru di atas)
+                if (a.rawDate === b.rawDate) {
+                    return b.id - a.id;
+                }
+                // Bandingkan berdasarkan tanggal (terbaru di atas)
+                return new Date(b.rawDate) - new Date(a.rawDate);
+            });
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Keterangan</th>
+                            <th>Masuk</th>
+                            <th>Keluar</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            sortedTransactions.forEach(transaction => {
+                html += `
+                    <tr>
+                        <td>${transaction.date}</td>
+                        <td>${transaction.description}</td>
+                        <td class="${transaction.type === 'in' ? 'in-amount' : ''}">
+                            ${transaction.type === 'in' ? `Rp ${transaction.amount.toLocaleString('id-ID')}` : ''}
+                        </td>
+                        <td class="${transaction.type === 'out' ? 'out-amount' : ''}">
+                            ${transaction.type === 'out' ? `Rp ${transaction.amount.toLocaleString('id-ID')}` : ''}
+                        </td>
+                        <td>
+                            <button class="delete-btn" onclick="deleteTransaction(${transaction.id})">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            transactionsContainer.innerHTML = html;
+        }
+        
+        // Fungsi untuk ekspor ke PDF
+        function exportToPDF() {
+            if (transactions.length === 0) {
+                alert('Belum ada transaksi untuk diekspor');
+                return;
+            }
+            
+            // Gunakan jsPDF dari CDN
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Judul
+            doc.setFontSize(18);
+            doc.text('Laporan Kas', 105, 15, null, null, 'center');
+            
+            // Tanggal laporan
+            doc.setFontSize(12);
+            doc.text(`Tanggal Laporan: ${new Date().toLocaleDateString('id-ID')}`, 15, 25);
+            
+            // Total saldo
+            doc.setFontSize(14);
+            doc.text(`Total Kas: Rp ${balance.toLocaleString('id-ID')}`, 15, 35);
+            
+            // Header tabel
+            const headers = [['Tanggal', 'Keterangan', 'Masuk', 'Keluar']];
+            
+            // Urutkan transaksi untuk PDF (sama seperti di UI)
+            const sortedTransactions = [...transactions].sort((a, b) => {
+                if (a.rawDate === b.rawDate) {
+                    return b.id - a.id;
+                }
+                return new Date(b.rawDate) - new Date(a.rawDate);
+            });
+            
+            // Data transaksi
+            const data = sortedTransactions.map(transaction => [
+                transaction.date, // sudah dalam format DD/MM/YYYY
+                transaction.description,
+                transaction.type === 'in' ? `Rp ${transaction.amount.toLocaleString('id-ID')}` : '',
+                transaction.type === 'out' ? `Rp ${transaction.amount.toLocaleString('id-ID')}` : ''
+            ]);
+            
+            // Tambahkan tabel
+            doc.autoTable({
+                startY: 45,
+                head: headers,
+                body: data,
+                theme: 'grid',
+                styles: {
+                    fontSize: 10,
+                    cellPadding: 3,
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: {cellWidth: 25},
+                    1: {cellWidth: 70},
+                    2: {cellWidth: 35},
+                    3: {cellWidth: 35}
+                },
+                didDrawPage: function (data) {
+                    doc.setFontSize(10);
+                    doc.text(`Halaman ${data.pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 10);
+                }
+            });
+            
+            // Simpan PDF
+            doc.save(`laporan-kas-${new Date().toISOString().slice(0, 10)}.pdf`);
+        }
+        
+        // Event Listeners
+        addButton.addEventListener('click', addTransaction);
+        exportButton.addEventListener('click', exportToPDF);
+        clearButton.addEventListener('click', clearAllTransactions);
+        
+        // Inisialisasi tampilan
+        window.deleteTransaction = deleteTransaction;
+        updateUI();
+    </script>
+</body>
+</html>
